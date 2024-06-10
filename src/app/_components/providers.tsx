@@ -1,3 +1,4 @@
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export default async function Providers({
@@ -8,7 +9,9 @@ export default async function Providers({
 }) {
     return (
         <TRPCReactProvider>
-            {children}
+            <TooltipProvider>
+                {children}
+            </TooltipProvider>
         </TRPCReactProvider>
     );
 }
