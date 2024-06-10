@@ -75,10 +75,16 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { getServerAuthSession } from "~/server/auth"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { ModeToggle } from "./mode-toggle"
 
-export function Wrapper({ children }: {
+export async function Wrapper({ children }: {
     children: React.ReactNode
 }) {
+
+    const session = await getServerAuthSession();
+
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -154,13 +160,29 @@ export function Wrapper({ children }: {
                 <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Link
-                                href="#"
-                                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                            >
-                                <Settings className="h-5 w-5" />
-                                <span className="sr-only">Settings</span>
-                            </Link>
+                            <Dialog>
+                                <DialogTrigger>
+
+                                    <div
+
+                                        className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                                    >
+                                        <Settings className="h-5 w-5" />
+                                        <span className="sr-only">Settings</span>
+                                    </div>
+
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                        <DialogDescription>
+                                            <ModeToggle />
+                                            This action cannot be undone. This will permanently delete your account
+                                            and remove your data from our servers.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                </DialogContent>
+                            </Dialog>
                         </TooltipTrigger>
                         <TooltipContent side="right">Settings</TooltipContent>
                     </Tooltip>
@@ -257,7 +279,7 @@ export function Wrapper({ children }: {
                                 className="overflow-hidden rounded-full"
                             >
                                 <Image
-                                    src="/placeholder-user.jpg"
+                                    src={session?.user.image}
                                     width={36}
                                     height={36}
                                     alt="Avatar"

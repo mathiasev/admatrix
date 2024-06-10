@@ -1,5 +1,6 @@
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { TRPCReactProvider } from "~/trpc/react";
+import { ThemeProvider } from "./theme-provider";
 
 export default async function Providers({
     children,
@@ -8,10 +9,17 @@ export default async function Providers({
     children: React.ReactNode;
 }) {
     return (
-        <TRPCReactProvider>
-            <TooltipProvider>
-                {children}
-            </TooltipProvider>
-        </TRPCReactProvider>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <TRPCReactProvider>
+                <TooltipProvider>
+                    {children}
+                </TooltipProvider>
+            </TRPCReactProvider>
+        </ThemeProvider>
     );
 }

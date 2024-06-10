@@ -4,7 +4,8 @@ import { GeistSans } from "geist/font/sans";
 
 
 import Providers from "./_components/providers";
-import { Wrapper } from "./_components/wrapper";
+import { Wrapper } from "~/components/layout/wrapper";
+
 
 export const metadata = {
   title: "Create T3 App",
@@ -18,14 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <Providers>
-        <body>
+    <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
+      <body>
+        <Providers>
           <Wrapper>
             {children}
           </Wrapper>
-        </body>
-      </Providers>
+        </Providers>
+      </body>
     </html >
   );
 }
