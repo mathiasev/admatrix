@@ -1,35 +1,15 @@
-import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
-import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
+import { CreateCampaign } from "~/app/_components/create-campaign";
+import { CreateClient } from "./_components/create-client";
+import { CampaignTable } from "./_components/campaign-table";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-  const session = await getServerAuthSession();
 
   return (
-    <section>
-      <CrudShowcase />
+    <section className="col-span-3 grid grid-cols-4 gap-4">
+      <CreateCampaign />
+      <CreateClient />
+      <CampaignTable />
     </section>
-  );
-}
-
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  const latestPost = await api.post.getLatest();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
   );
 }

@@ -19,11 +19,16 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `admatrix_${name}`);
 
-export const posts = createTable(
-  "post",
+export const campaigns = createTable(
+  "campaign",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
     name: varchar("name", { length: 256 }),
+    objective: varchar("objective", { length: 256 }),
+    description: varchar("description", { length: 256 }),
+    clientId: varchar("clientId", { length: 255 })
+      .notNull()
+      .references(() => clients.id),
     createdById: varchar("createdById", { length: 255 })
       .notNull()
       .references(() => users.id),
@@ -37,6 +42,22 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.name),
   })
 );
+
+export const campaignRelations = relations(campaigns, ({ one }) => ({
+  client: one(clients, { fields: [campaigns.clientId], references: [clients.id] }),
+}));
+
+export const clients = createTable("client", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }),
+});
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
