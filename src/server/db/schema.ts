@@ -4,10 +4,10 @@ import {
   integer,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
   varchar,
+  json
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -26,6 +26,9 @@ export const campaigns = createTable(
     name: varchar("name", { length: 256 }),
     objective: varchar("objective", { length: 256 }),
     description: varchar("description", { length: 256 }),
+    channelId: varchar("channelId", { length: 255 })
+      .notNull()
+      .references(() => channels.id),
     clientId: varchar("clientId", { length: 255 })
       .notNull()
       .references(() => clients.id),
@@ -43,8 +46,65 @@ export const campaigns = createTable(
   })
 );
 
-export const campaignRelations = relations(campaigns, ({ one }) => ({
+export const campaignRelations = relations(campaigns, ({ one, many }) => ({
+  channel: one(channels, { fields: [campaigns.channelId], references: [channels.id] }),
   client: one(clients, { fields: [campaigns.clientId], references: [clients.id] }),
+  adsets: many(adsets)
+}));
+
+export const channels = createTable("channel", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  campaignName: varchar("campaignName", { length: 255 }),
+  adSetName: varchar("adSetName", { length: 255 }),
+  adName: varchar("adName", { length: 255 }),
+  objectives: json("objectives").$type<string[]>(),
+
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }),
+});
+
+
+export const adsets = createTable("adset", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  description: varchar("description", { length: 255 }),
+  campaignId: varchar("campaignId", { length: 255 })
+    .notNull()
+    .references(() => campaigns.id),
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }),
+});
+
+export const ads = createTable("ad", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  description: varchar("description", { length: 255 }),
+  adSetId: varchar("adSetId", { length: 255 })
+    .notNull()
+    .references(() => adsets.id),
+  createdById: varchar("createdById", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }),
+});
+
+export const adSetRelations = relations(adsets, ({ many }) => ({
+  ads: many(ads),
+
 }));
 
 export const clients = createTable("client", {
@@ -68,7 +128,6 @@ export const users = createTable("user", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
-  password: varchar("password", { length: 255 })
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

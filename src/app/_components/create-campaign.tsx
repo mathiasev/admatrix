@@ -13,20 +13,25 @@ export function CreateCampaign() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [objective, setObjective] = useState("");
-  const [client, setClient] = useState("");
+  const [clientId, setClientId] = useState("");
+  const [channelId, setChannelId] = useState("");
 
   const createCampaign = api.campaign.create.useMutation({
     onSuccess: () => {
+
       setName("");
       setDescription("");
       setObjective("");
-      setClient("");
-      // revalidatePath('/', 'page');
-      router.refresh();
+      setChannelId("");
+      setClientId("");
+      setChannelId("");
+
+      router.push(`/campaign/`);
     },
   });
 
   const clients = api.client.getClients.useQuery();
+  const channels = api.channel.getChannels.useQuery();
 
   return (
     <form
@@ -35,7 +40,8 @@ export function CreateCampaign() {
         createCampaign.mutate({
           name: name,
           objective: objective,
-          client: client,
+          channelId: channelId,
+          clientId: clientId,
           description: description
         });
       }}
@@ -55,29 +61,48 @@ export function CreateCampaign() {
           <div className="flex flex-col gap-2">
             <input
               type="text"
+              required
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-full px-4 py-2"
             />
+
             <select
-              value={objective}
-              onChange={(e) => setObjective(e.target.value)}
+              value={clientId}
+              onChange={(e) => setClientId(e.target.value)}
               className="w-full rounded-full px-4 py-2"
+              required
             >
-              <option id="none" value="" disabled selected>Select an objective</option>
-              <option id="awareness" value="awareness">Awareness</option>
-            </select>
-            <select
-              value={client}
-              onChange={(e) => setClient(e.target.value)}
-              className="w-full rounded-full px-4 py-2"
-            >
-              <option id="none" value="" disabled selected>Select a client</option>
+              <option id="none" value="" disabled >Select a client</option>
               {clients.data && clients.data.map(client => {
                 return <option key={client.id} value={client.id}>{client.name}</option>
               })}
             </select>
+            <select
+              required
+              value={channelId}
+              onChange={(e) => setChannelId(e.target.value)}
+              className="w-full rounded-full px-4 py-2"
+            >
+              <option id="none" value="" disabled >Select a channel</option>
+              {channels.data && channels.data.map(channel => {
+                return <option key={channel.id} value={channel.id}>{channel.name}</option>
+              })}
+            </select>
+
+            <select
+              required
+              value={objective}
+              onChange={(e) => setObjective(e.target.value)}
+              className="w-full rounded-full px-4 py-2"
+            >
+              <option id="none" value="" disabled>Select an objective</option>
+              {channels.data?.find(x => x.id == channelId)?.objectives?.map((obj, index) => (
+                <option key={index} id={obj} value={obj}>{obj}</option>
+              ))}
+            </select>
+
             <textarea
               placeholder="Description"
               value={description}

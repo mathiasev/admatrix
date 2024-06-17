@@ -65,7 +65,7 @@ export function CampaignTable() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <Link href={`/campaign/${campaign.id}`}>
+                                                <Link href={`/campaign/${campaign.id}/edit`}>
                                                     <DropdownMenuItem>
                                                         Edit
                                                     </DropdownMenuItem>
