@@ -52,15 +52,43 @@ export default function ChannelsPage() {
                         <Accordion type="single" collapsible className="w-full">
                             {channels.data && channels.data.map(channel => (
                                 <AccordionItem value={channel.id}>
-                                    <AccordionTrigger>{channel.name}</AccordionTrigger>
+                                    <AccordionTrigger className="font-bold" style={{ color: channel.themeColor ?? '#fff' }}>{channel.name}</AccordionTrigger>
                                     <AccordionContent>
-                                        <div>
-                                            <p><strong>Objectives</strong></p>
-                                            <ul className="list-inside list-disc">
-                                                {channel.objectives?.map(objective => (
-                                                    <li key={objective}>{objective}</li>
-                                                ))}
-                                            </ul>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="">
+                                                <Card>
+                                                    <CardHeader>
+                                                        <CardTitle className="text-base">
+                                                            Campaign Structure
+                                                        </CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="bg-stone-900 text-stone-400 pt-4 pl-4">
+                                                            <p className="mb-3">{channel.campaignName}</p>
+                                                            <div className="bg-stone-800 text-stone-300 pt-4 pl-4">
+                                                                <p className="mb-3">{channel.adSetName}</p>
+                                                                <div className="bg-stone-700 text-stone-200 py-4 pl-4">
+                                                                    <p>{channel.adName}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                            <div className="">
+                                                <Card>
+                                                    <CardHeader >
+                                                        <CardTitle>Objectives</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <ul className="grid gap-4">
+                                                            {channel.objectives?.map(objective => (
+                                                                <li key={objective}>{objective}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
                                         </div>
 
                                         <div className="w-full flex justify-end">

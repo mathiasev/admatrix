@@ -56,6 +56,7 @@ export const channels = createTable("channel", {
   id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
   campaignName: varchar("campaignName", { length: 255 }),
+  themeColor: varchar("themeColor", { length: 255 }),
   adSetName: varchar("adSetName", { length: 255 }),
   adName: varchar("adName", { length: 255 }),
   objectives: json("objectives").$type<string[]>(),
@@ -86,7 +87,7 @@ export const adsets = createTable("adset", {
   updatedAt: timestamp("updatedAt", { withTimezone: true }),
 });
 
-export const ads = createTable("ad", {
+export const ads = createTable("ads", {
   id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
   description: varchar("description", { length: 255 }),
@@ -102,9 +103,13 @@ export const ads = createTable("ad", {
   updatedAt: timestamp("updatedAt", { withTimezone: true }),
 });
 
-export const adSetRelations = relations(adsets, ({ many }) => ({
-  ads: many(ads),
+export const adRelations = relations(ads, ({ one }) => ({
+  adset: one(adsets, { fields: [ads.adSetId], references: [adsets.id] }),
 
+}));
+export const adSetRelations = relations(adsets, ({ many, one }) => ({
+  ads: many(ads),
+  campaign: one(campaigns, { fields: [adsets.campaignId], references: [campaigns.id] })
 }));
 
 export const clients = createTable("client", {
@@ -118,6 +123,11 @@ export const clients = createTable("client", {
     .notNull(),
   updatedAt: timestamp("updatedAt", { withTimezone: true }),
 });
+
+
+export const clientRelations = relations(clients, ({ many }) => ({
+  campaigns: many(campaigns),
+}));
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),

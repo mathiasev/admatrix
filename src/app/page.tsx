@@ -10,7 +10,6 @@ export default async function Home() {
     <section className="col-span-3 grid grid-cols-4 gap-4">
       <CreateCampaign />
       <CreateClient />
-      <CreateChannel />
       <CampaignTable />
     </section>
   );

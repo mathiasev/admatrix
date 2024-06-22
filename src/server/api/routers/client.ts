@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   protectedProcedure
 } from "~/server/api/trpc";
-import { clients } from "~/server/db/schema";
+import { campaigns, clients } from "~/server/db/schema";
 
 export const clientRouter = createTRPCRouter({
 
@@ -22,6 +22,15 @@ export const clientRouter = createTRPCRouter({
   getClients: protectedProcedure.query(({ ctx }) => {
     return ctx.db.query.clients.findMany({
       orderBy: (clients, { desc }) => [desc(clients.createdAt)],
+      with: {
+        campaigns: {
+
+          columns: {
+            id: true,
+            name: true
+          }
+        }
+      }
     });
   }),
 

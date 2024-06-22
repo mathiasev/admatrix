@@ -12,6 +12,7 @@ export const channelRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({
       name: z.string().min(1),
+      themeColor: z.string().min(1),
       campaignName: z.string().min(1).default('Campaign'),
       adSetName: z.string().min(1).default('Ad Set'),
       adName: z.string().min(1).default("Ad"),
@@ -20,6 +21,7 @@ export const channelRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(channels).values({
         name: input.name,
+        themeColor: input.themeColor,
         campaignName: input.campaignName,
         adSetName: input.adSetName,
         adName: input.adName,

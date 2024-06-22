@@ -11,6 +11,7 @@ export function CreateChannel() {
 
   const router = useRouter();
   const [name, setName] = useState("");
+  const [themeColor, setThemeColor] = useState("#ffffff");
   const [campaignName, setCampaignName] = useState("Campaign");
   const [adSetName, setAdSetName] = useState("Ad Set");
   const [adName, setAdName] = useState("Ad");
@@ -21,6 +22,7 @@ export function CreateChannel() {
     onSuccess: () => {
       router.refresh();
       setName("");
+      setThemeColor("#ffffff");
       setCampaignName("Campaign");
       setAdSetName("Ad Set");
       setAdName("Ad");
@@ -39,6 +41,7 @@ export function CreateChannel() {
         e.preventDefault();
         createChannel.mutate({
           name,
+          themeColor,
           objectives,
           adName,
           adSetName,
@@ -56,6 +59,13 @@ export function CreateChannel() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-full px-4 py-2"
+        />
+        <input
+          type="color"
+          placeholder="Theme Colour"
+          value={themeColor}
+          onChange={(e) => setThemeColor(e.target.value)}
+          className="w-full rounded-full px-4 py-2 h-12 cursor-pointer"
         />
         <input
           type="text"

@@ -21,13 +21,9 @@ export default function SettingsPage({ children, channels }: { children: React.R
                     className="grid gap-4 text-sm text-muted-foreground"
                 >
                     <Link href="#" className="font-semibold text-primary">
-                        General
+                        Channels
                     </Link>
-                    <Link href="#">Security</Link>
-                    <Link href="#">Integrations</Link>
-                    <Link href="#">Support</Link>
-                    <Link href="#">Organizations</Link>
-                    <Link href="#">Advanced</Link>
+                    <Link href="#">Ad Types</Link>
                 </nav>
             </div>
 

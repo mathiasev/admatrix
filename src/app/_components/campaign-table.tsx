@@ -26,6 +26,9 @@ export function CampaignTable() {
                         <TableRow>
                             <TableHead>Title</TableHead>
                             <TableHead className="hidden sm:table-cell">
+                                Channel
+                            </TableHead>
+                            <TableHead className="hidden sm:table-cell">
                                 Objective
                             </TableHead>
                             <TableHead className="hidden sm:table-cell">
@@ -44,6 +47,11 @@ export function CampaignTable() {
                                 <TableRow key={campaign.id} >
                                     <TableCell>
                                         <CampaignDialog campaign={campaign} />
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                        <Badge className="text-xs" variant="default" style={{ backgroundColor: campaign.channel.themeColor ?? '#fff' }}>
+                                            {campaign.channel.name}
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                         {campaign.objective}

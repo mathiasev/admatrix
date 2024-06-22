@@ -1,4 +1,5 @@
 import { Copy } from "lucide-react"
+import Link from "next/link"
 
 import { Button } from "~/components/ui/button"
 import {
@@ -43,9 +44,11 @@ export function CampaignDialog({ campaign }: { campaign: typeof campaigns.$infer
                 </div>
                 <DialogFooter className="sm:justify-start">
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
-                        </Button>
+                        <Link href={`/campaign/${campaign.id}`}>
+                            <Button type="button" variant="secondary">
+                                View campaign
+                            </Button>
+                        </Link>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
