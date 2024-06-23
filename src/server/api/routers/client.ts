@@ -1,3 +1,4 @@
+import { channel } from "diagnostics_channel";
 import { z } from "zod";
 
 import {
@@ -28,6 +29,22 @@ export const clientRouter = createTRPCRouter({
           columns: {
             id: true,
             name: true
+          }
+        }
+      }
+    });
+  }),
+
+  getClientById: protectedProcedure.input(z.object({
+    clientId: z.string()
+  })).query(({ ctx, input }) => {
+    return ctx.db.query.clients.findFirst({
+      where: (clients, { eq }) => eq(clients.id, input.clientId),
+      orderBy: (clients, { desc }) => [desc(clients.createdAt)],
+      with: {
+        campaigns: {
+          with: {
+            channel: true
           }
         }
       }

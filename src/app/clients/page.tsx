@@ -12,18 +12,18 @@ export default function CampaignsPage() {
     return (
         <section className="col-span-3 grid grid-cols-4 gap-4">
             {clients.data && clients.data.map(client => (
-                <Card key={client.id}>
-                    <CardHeader className="">
-                        <Link href={`/client/${client.id}`} className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Link href={`/client/${client.id}`} >
+                    <Card key={client.id} className="hover:bg-secondary transition-colors duration-150">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">{client.name}</CardTitle>
                             <Tag className="h-4 w-4 text-muted-foreground" />
-                        </Link>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{client.campaigns.length}</div>
-                        <p className="text-xs text-muted-foreground">campaigns</p>
-                    </CardContent>
-                </Card>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{client.campaigns.length}</div>
+                            <p className="text-xs text-muted-foreground">campaigns</p>
+                        </CardContent>
+                    </Card>
+                </Link>
             ))}
 
         </section>

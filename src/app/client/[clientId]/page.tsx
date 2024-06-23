@@ -1,25 +1,21 @@
 "use client"
 import clsx from "clsx";
 import { ChevronLeft, Expand, Upload } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CreateAdSetDialog } from "~/app/_components/create-adset-dialog";
+import { CreateCampaignDialog } from "~/app/_components/create-campaign-dialog";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
-import { Dialog, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Textarea } from "~/components/ui/textarea";
-import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { api } from "~/trpc/react"
 
 
-export default function CampaignPage({ params }: { params: { campaignId: string } }) {
+export default function ClientPage({ params }: { params: { clientId: string } }) {
     let [editMode, updateEditMode] = useState(false);
     let router = useRouter();
     let searchParams = useSearchParams();
@@ -31,10 +27,10 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
         }
     }, [editMode]);
 
-    let [campaign, campaignQuery] = api.campaign.getCampaignById.useSuspenseQuery({ campaignId: params.campaignId });
+    let [client, clientQuery] = api.client.getClientById.useSuspenseQuery({ clientId: params.clientId });
 
-    if (campaign == undefined) {
-        return '<p>Error fetching campaign.</p>';
+    if (client == undefined) {
+        return '<p>Error fetching client.</p>';
     }
 
     return (
@@ -45,11 +41,8 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                     <span className="sr-only">Back</span>
                 </Button>
                 <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                    {campaign?.name}
+                    {client?.name}
                 </h1>
-                <Badge variant="outline" className="ml-auto text-white sm:ml-0" style={{ backgroundColor: campaign?.channel.themeColor ?? '#fff' }}>
-                    {campaign?.channel.name}
-                </Badge>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                     {!editMode && (
                         <Button onClick={() => updateEditMode(true)} variant="outline" size="sm">
@@ -58,7 +51,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                     )}
                     {editMode && (
                         <>
-                            <Button onClick={() => { router.push(`/campaign/${campaign?.id}`); router.refresh() }} variant="outline" size="sm">
+                            <Button onClick={() => { router.push(`/campaign/${client?.id}`); router.refresh() }} variant="outline" size="sm">
                                 Discard
                             </Button>
                             <Button size="sm">Save Campaign</Button>
@@ -70,7 +63,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                     <Card x-chunk="dashboard-07-chunk-0">
                         <CardHeader>
-                            <CardTitle>{campaign.channel.campaignName} Details</CardTitle>
+                            <CardTitle>Client Details</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
@@ -84,23 +77,14 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                                         )}
                                     id="name"
                                     type="text"
-                                    defaultValue={campaign?.name ?? ""}
-                                />
-
-                                {editMode && <Label htmlFor="description">Description</Label>}
-                                <Textarea
-                                    readOnly={!editMode}
-                                    id="description"
-                                    defaultValue={campaign?.description ?? ""}
-                                    className={clsx({ "min-h-32 text-muted-foreground": true },
-                                        { "border-transparent rounded-none p-0 focus-visible:ring-0 focus:ring-0 cursor-default": !editMode })}
+                                    defaultValue={client?.name ?? ""}
                                 />
                             </div>
                         </CardContent>
                     </Card>
                     <Card x-chunk="dashboard-07-chunk-1">
                         <CardHeader>
-                            <CardTitle>{campaign?.channel.adSetName}s</CardTitle>
+                            <CardTitle>Campaigns</CardTitle>
                             <CardDescription>
                                 Lipsum dolor sit amet, consectetur adipiscing elit
                             </CardDescription>
@@ -115,15 +99,16 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {campaign?.adsets.map(adset => (<TableRow key={adset.id}>
-                                        <TableCell className="font-semibold">
-                                            {adset.name}
+                                    {client.campaigns?.map(campaign => (<TableRow key={campaign.id}>
+                                        <TableCell className="font-semibold flex gap-2">
+                                            <span>{campaign.name}</span>
+                                            <Badge style={{ backgroundColor: campaign.channel.themeColor ?? '#ffffff' }}>{campaign.channel.name}</Badge>
                                         </TableCell>
                                         <TableCell>
-                                            {adset.description}
+                                            {campaign.description}
                                         </TableCell>
                                         <TableCell>
-                                            <Link href={`/campaign/${campaign.id}/adsets/${adset.id}`}>
+                                            <Link href={`/campaign/${campaign.id}`}>
                                                 <Button size={"icon"}><Expand /></Button>
                                             </Link>
                                         </TableCell>
@@ -132,7 +117,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                             </Table>
                         </CardContent>
                         <CardFooter className="justify-center border-t p-4">
-                            <CreateAdSetDialog campaignId={campaign.id} title={campaign?.channel.adSetName ?? "Ad Set"} />
+                            <CreateCampaignDialog clientId={client.id} />
                         </CardFooter>
                     </Card>
 
@@ -146,33 +131,18 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-2">
-                                <p className="flex gap-2"><span className="font-bold">Objective</span><span>{campaign.objective}</span></p>
-                                <p className="flex gap-2"><span className="font-bold">Created</span><span>{campaign.createdAt.toLocaleString()}</span></p>
-                                {campaign.updatedAt && <p className="flex gap-2"><span className="font-bold">Last updated</span><span>{campaign.updatedAt?.toLocaleString()}</span></p>}
+                                <p className="flex gap-2"><span className="font-bold">Created</span><span>{client.createdAt.toLocaleString()}</span></p>
+                                {client.updatedAt && <p className="flex gap-2"><span className="font-bold">Last updated</span><span>{client.updatedAt?.toLocaleString()}</span></p>}
                             </div>
                         </CardContent>
                     </Card>
-                    <Link href={`/client/${campaign.client.id}`}>
-                        <Card className="hover:bg-muted transition-colors duration-150">
-                            <CardHeader>
-                                <CardTitle>Client</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {campaign.client.name}
-                            </CardContent>
-                            <CardFooter>
-                                <Button className="ml-auto mr-0" variant={"outline"}>View client</Button>
-                            </CardFooter>
-                        </Card>
-                    </Link>
-
                 </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
                 <Button variant="outline" size="sm">
                     Discard
                 </Button>
-                <Button size="sm">Save Campaign</Button>
+                <Button size="sm">Save Client</Button>
             </div>
         </div >
 

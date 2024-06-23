@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -26,6 +27,14 @@ export const campaignRouter = createTRPCRouter({
         clientId: input.clientId,
         createdById: ctx.session.user.id,
       }).returning()
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.delete(campaigns).where(
+        eq(campaigns.id, input.id)
+      )
     }),
 
   getCampaigns: protectedProcedure.query(({ ctx }) => {

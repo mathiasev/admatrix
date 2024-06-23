@@ -10,10 +10,27 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~
 import { api } from "~/trpc/react";
 import { CampaignDialog } from "./campaign-dialog";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "~/components/ui/alert-dialog";
+import { revalidatePath } from "next/cache";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 
 export function CampaignTable() {
 
+    const router = useRouter();
     const campaigns = api.campaign.getCampaigns.useQuery();
+
+    const deleteCampaign = api.campaign.delete.useMutation();
+
+    const handleTrashClick = (campaignId: string) => {
+        deleteCampaign.mutate({
+            id: campaignId
+        }, {
+            onSuccess(data) {
+                router.refresh()
+            },
+        });
+    }
 
     return (
         <Card x-chunk="dashboard-05-chunk-3" className="col-span-4">
@@ -68,6 +85,7 @@ export function CampaignTable() {
                                         {campaign.description}
                                     </TableCell>
                                     <TableCell className="text-right">
+
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button size="icon" variant="outline" className="h-8 w-8">
@@ -83,16 +101,19 @@ export function CampaignTable() {
                                                 </Link>
                                                 <DropdownMenuItem>Export</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem>Trash</DropdownMenuItem>
+                                                <DropdownMenuItem >
+                                                    <Button variant={"destructive"} className="w-full" size={"sm"} onClick={(e) => { handleTrashClick(campaign.id); e.preventDefault() }}>
+                                                        Trash
+                                                    </Button>
+                                                </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             )
                         })}
-
                     </TableBody>
                 </Table>
-            </CardContent>
-        </Card>)
+            </CardContent >
+        </Card >)
 }
