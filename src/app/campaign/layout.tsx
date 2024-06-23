@@ -6,7 +6,6 @@ export default function CampaignLayout({
 }) {
     return (
         <div className="col-span-3">
-            <p>Campaign</p>
             {children}
         </div>
     )

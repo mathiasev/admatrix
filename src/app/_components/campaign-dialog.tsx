@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react"
+import { Copy, Expand, ZoomIn } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "~/components/ui/button"
@@ -19,7 +19,7 @@ export function CampaignDialog({ campaign }: { campaign: typeof campaigns.$infer
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">{campaign.name}</Button>
+                <Button variant="ghost" size={"icon"}><ZoomIn className="w-3 h-3" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>

@@ -85,46 +85,23 @@ export async function Wrapper({ children }: {
                     </Link>
                     <Menu />
                 </nav>
+
                 <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+                    <ModeToggle />
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Dialog>
-                                <DialogTrigger>
-
-                                    <div
-                                        className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                                    >
-                                        <Settings className="h-5 w-5" />
-                                        <span className="sr-only">Settings</span>
-                                    </div>
-
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Settings</DialogTitle>
-                                        <DialogDescription>
-                                            <div className="flex gap-4 items-center">
-                                                <ModeToggle />
-                                                <span>Mode</span>
-                                            </div>
-                                        </DialogDescription>
-                                        <DialogFooter>
-                                            <DialogClose asChild>
-                                                <Link href="/settings">
-                                                    <Button>
-                                                        Settings
-                                                    </Button>
-                                                </Link>
-                                            </DialogClose>
-                                        </DialogFooter>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </TooltipTrigger>
+                            <Link href="/settings"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                            >
+                                <Settings className="h-5 w-5" />
+                                <span className="sr-only">Settings</span>
+                            </Link>
+                        </TooltipTrigger >
                         <TooltipContent side="right">Settings</TooltipContent>
-                    </Tooltip>
-                </nav>
-            </aside>
+                    </Tooltip >
+                </nav >
+
+            </aside >
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
                     <Sheet>
@@ -235,6 +212,6 @@ export async function Wrapper({ children }: {
                     {children}
                 </main>
             </div>
-        </div>
+        </div >
     )
 }

@@ -46,6 +46,9 @@ export function CampaignTable() {
                             return (
                                 <TableRow key={campaign.id} >
                                     <TableCell>
+                                        <Link href={`/campaign/${campaign.id}`}>
+                                            {campaign.name}
+                                        </Link>
                                         <CampaignDialog campaign={campaign} />
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
@@ -73,7 +76,7 @@ export function CampaignTable() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <Link href={`/campaign/${campaign.id}/edit`}>
+                                                <Link href={`/campaign/${campaign.id}?edit=true`}>
                                                     <DropdownMenuItem>
                                                         Edit
                                                     </DropdownMenuItem>

@@ -18,14 +18,14 @@ export const campaignRouter = createTRPCRouter({
       channelId: z.string().min(1),
     }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(campaigns).values({
+      return await ctx.db.insert(campaigns).values({
         name: input.name,
         description: input.description,
         objective: input.objective,
         channelId: input.channelId,
         clientId: input.clientId,
         createdById: ctx.session.user.id,
-      });
+      }).returning()
     }),
 
   getCampaigns: protectedProcedure.query(({ ctx }) => {
@@ -51,6 +51,7 @@ export const campaignRouter = createTRPCRouter({
       orderBy: (campaigns, { desc }) => [desc(campaigns.createdAt)],
       with: {
         channel: true,
+        adsets: true,
         client: {
           columns: {
             id: true,

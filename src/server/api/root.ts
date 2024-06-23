@@ -3,6 +3,7 @@ import { userRouter } from "./routers/user";
 import { campaignRouter } from "./routers/campaign";
 import { clientRouter } from "./routers/client";
 import { channelRouter } from "./routers/channel";
+import { adsetRouter } from "./routers/adset";
 
 /**
  * This is the primary router for your server.
@@ -13,7 +14,8 @@ export const appRouter = createTRPCRouter({
   campaign: campaignRouter,
   user: userRouter,
   client: clientRouter,
-  channel: channelRouter
+  channel: channelRouter,
+  adset: adsetRouter
 });
 
 // export type definition of API
