@@ -8,12 +8,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 
 import { api } from "~/trpc/react";
-import { CampaignDialog } from "./campaign-dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "~/components/ui/alert-dialog";
 import { revalidatePath } from "next/cache";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import { CampaignDialog } from "../campaign-dialog";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
 
 export function CampaignTable() {
 
@@ -38,7 +40,8 @@ export function CampaignTable() {
                 <CardTitle>Campaigns</CardTitle>
             </CardHeader>
             <CardContent>
-                <Table>
+                {campaigns.data && <DataTable columns={columns} data={campaigns.data} />}
+                {/* <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Title</TableHead>
@@ -113,7 +116,7 @@ export function CampaignTable() {
                             )
                         })}
                     </TableBody>
-                </Table>
+                </Table> */}
             </CardContent >
         </Card >)
 }

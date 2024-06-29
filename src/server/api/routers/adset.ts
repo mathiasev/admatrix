@@ -40,7 +40,13 @@ export const adsetRouter = createTRPCRouter({
       where: (adsets, { eq }) => eq(adsets.id, input.adsetId),
       orderBy: (adsets, { desc }) => [desc(adsets.createdAt)],
       with: {
-        campaign: true
+        ads: true,
+        campaign: {
+          with: {
+            client: true,
+            channel: true
+          }
+        }
       }
     });
   }),

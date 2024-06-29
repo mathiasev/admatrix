@@ -9,11 +9,11 @@ import {
 } from "~/components/ui/dialog"
 import { CreateCampaign } from "./create-campaign"
 
-export function CreateCampaignDialog({ clientId = null }: { clientId?: string | null }) {
+export function CreateCampaignDialog({ clientId = "", label = "" }: { clientId?: string, label?: string }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Create New</Button>
+                <Button variant="outline">Create New {label}</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

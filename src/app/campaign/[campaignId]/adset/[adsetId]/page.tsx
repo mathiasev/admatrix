@@ -18,13 +18,13 @@ import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { api } from "~/trpc/react"
 
-export const metadata = {
-    title: "Ad Matrix | Campaign",
-    description: "The ad preview tool",
-    icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
 
-export default function CampaignPage({ params }: { params: { campaignId: string } }) {
+export default function CampaignAdSet({ params }: { params: { campaignId: string, adsetId: string } }) {
+
+    const [adset, adsetQuery] = api.adset.getAdsetById.useSuspenseQuery({
+        adsetId: params.adsetId
+    });
+
     let [editMode, updateEditMode] = useState(false);
     let router = useRouter();
     let searchParams = useSearchParams();
@@ -36,10 +36,8 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
         }
     }, [editMode]);
 
-    let [campaign, campaignQuery] = api.campaign.getCampaignById.useSuspenseQuery({ campaignId: params.campaignId });
-
-    if (campaign == undefined) {
-        return '<p>Error fetching campaign.</p>';
+    if (adset == undefined) {
+        return '<p>Error fetching adset.</p>';
     }
 
     return (
@@ -50,10 +48,10 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                     <span className="sr-only">Back</span>
                 </Button>
                 <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                    {campaign?.name}
+                    {adset?.name}
                 </h1>
-                <Badge variant="outline" className="ml-auto text-white sm:ml-0" style={{ backgroundColor: campaign?.channel.themeColor ?? '#fff' }}>
-                    {campaign?.channel.name}
+                <Badge variant="outline" className="ml-auto text-white sm:ml-0" style={{ backgroundColor: adset?.campaign.channel.themeColor ?? '#fff' }}>
+                    {adset?.campaign.channel.name}
                 </Badge>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                     {!editMode && (
@@ -63,7 +61,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                     )}
                     {editMode && (
                         <>
-                            <Button onClick={() => { router.push(`/campaign/${campaign?.id}`); router.refresh() }} variant="outline" size="sm">
+                            <Button onClick={() => { router.push(`/campaign/${params.campaignId}/adset/${params.adsetId}`); router.refresh() }} variant="outline" size="sm">
                                 Discard
                             </Button>
                             <Button size="sm">Save Campaign</Button>
@@ -75,7 +73,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                     <Card x-chunk="dashboard-07-chunk-0">
                         <CardHeader>
-                            <CardTitle>{campaign.channel.campaignName} Details</CardTitle>
+                            <CardTitle>{adset.campaign.channel.campaignName} Details</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
@@ -89,14 +87,14 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                                         )}
                                     id="name"
                                     type="text"
-                                    defaultValue={campaign?.name ?? ""}
+                                    defaultValue={adset?.name ?? ""}
                                 />
 
                                 {editMode && <Label htmlFor="description">Description</Label>}
                                 <Textarea
                                     readOnly={!editMode}
                                     id="description"
-                                    defaultValue={campaign?.description ?? ""}
+                                    defaultValue={adset?.description ?? ""}
                                     className={clsx({ "min-h-32 text-muted-foreground": true },
                                         { "border-transparent rounded-none p-0 focus-visible:ring-0 focus:ring-0 cursor-default": !editMode })}
                                 />
@@ -105,7 +103,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                     </Card>
                     <Card x-chunk="dashboard-07-chunk-1">
                         <CardHeader>
-                            <CardTitle>{campaign?.channel.adSetName}s</CardTitle>
+                            <CardTitle>{adset?.campaign.channel.adName}s</CardTitle>
                             <CardDescription>
                                 Lipsum dolor sit amet, consectetur adipiscing elit
                             </CardDescription>
@@ -120,15 +118,15 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {campaign?.adsets.map(adset => (<TableRow key={adset.id}>
+                                    {adset?.ads.map(ad => (<TableRow key={ad.id}>
                                         <TableCell className="font-semibold">
-                                            {adset.name}
+                                            {ad.name}
                                         </TableCell>
                                         <TableCell>
-                                            {adset.description}
+                                            {ad.description}
                                         </TableCell>
                                         <TableCell>
-                                            <Link href={`/campaign/${campaign.id}/adset/${adset.id}`}>
+                                            <Link href={`/campaign/${params.campaignId}/adset/${adset.id}/ad/${ad.id}`}>
                                                 <Button size={"icon"}><Expand /></Button>
                                             </Link>
                                         </TableCell>
@@ -137,7 +135,7 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                             </Table>
                         </CardContent>
                         <CardFooter className="justify-center border-t p-4">
-                            <CreateAdSetDialog campaignId={campaign.id} title={campaign?.channel.adSetName ?? "Ad Set"} />
+                            {/* <CreateAdSetDialog campaignId={campaign.id} title={campaign?.channel.adSetName ?? "Ad Set"} /> */}
                         </CardFooter>
                     </Card>
 
@@ -151,19 +149,19 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-2">
-                                <p className="flex gap-2"><span className="font-bold">Objective</span><span>{campaign.objective}</span></p>
-                                <p className="flex gap-2"><span className="font-bold">Created</span><span>{campaign.createdAt.toLocaleString()}</span></p>
-                                {campaign.updatedAt && <p className="flex gap-2"><span className="font-bold">Last updated</span><span>{campaign.updatedAt?.toLocaleString()}</span></p>}
+                                <p className="flex gap-2"><span className="font-bold">Campaign</span><span>{adset.campaign.name}</span></p>
+                                <p className="flex gap-2"><span className="font-bold">Created</span><span>{adset.createdAt.toLocaleString()}</span></p>
+                                {adset.updatedAt && <p className="flex gap-2"><span className="font-bold">Last updated</span><span>{adset.updatedAt?.toLocaleString()}</span></p>}
                             </div>
                         </CardContent>
                     </Card>
-                    <Link href={`/client/${campaign.client.id}`}>
+                    <Link href={`/client/${adset.campaign.client.id}`}>
                         <Card className="hover:bg-muted transition-colors duration-150">
                             <CardHeader>
                                 <CardTitle>Client</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {campaign.client.name}
+                                {adset.campaign.client.name}
                             </CardContent>
                             <CardFooter>
                                 <Button className="ml-auto mr-0" variant={"outline"}>View client</Button>
