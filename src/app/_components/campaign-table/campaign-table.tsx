@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { CampaignDialog } from "../campaign-dialog";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { CreateCampaignDialog } from "../create-campaign-dialog";
 
 export function CampaignTable() {
 
@@ -36,8 +37,11 @@ export function CampaignTable() {
 
     return (
         <Card x-chunk="dashboard-05-chunk-3" className="col-span-4">
-            <CardHeader className="px-7">
+            <CardHeader className="px-7 flex flex-row justify-between items-center">
                 <CardTitle>Campaigns</CardTitle>
+
+                <CreateCampaignDialog />
+
             </CardHeader>
             <CardContent>
                 {campaigns.data && <DataTable columns={columns} data={campaigns.data} />}

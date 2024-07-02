@@ -77,7 +77,7 @@ export const adsets = createTable("adset", {
   description: varchar("description", { length: 255 }),
   campaignId: varchar("campaignId", { length: 255 })
     .notNull()
-    .references(() => campaigns.id),
+    .references(() => campaigns.id, { onDelete: 'cascade' }),
   createdById: varchar("createdById", { length: 255 })
     .notNull()
     .references(() => users.id),
@@ -91,6 +91,8 @@ export const ads = createTable("ads", {
   id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
   description: varchar("description", { length: 255 }),
+  format: varchar("format", { length: 255 }),
+  adData: json("adData"),
   adSetId: varchar("adSetId", { length: 255 })
     .notNull()
     .references(() => adsets.id),

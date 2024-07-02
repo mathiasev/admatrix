@@ -3,12 +3,14 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 
 import { campaigns } from "~/server/db/schema"
+import { api } from "~/trpc/react";
 
 type nestedCampaign = {
     id: string;
@@ -35,6 +37,7 @@ type nestedCampaign = {
     }
 
 }
+
 
 export const columns: ColumnDef<nestedCampaign>[] = [
     {
@@ -139,10 +142,19 @@ export const columns: ColumnDef<nestedCampaign>[] = [
                             Copy payment ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+
+
+                                handleTrashClick(campaign.id)
+                            }
+                            }
+                        >
+                            Delete
+                        </DropdownMenuItem>
                         <DropdownMenuItem>View payment details</DropdownMenuItem>
                     </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu >
             )
         },
     },

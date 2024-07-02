@@ -51,7 +51,7 @@ export default function ChannelsPage() {
                     <form>
                         <Accordion type="single" collapsible className="w-full">
                             {channels.data && channels.data.map(channel => (
-                                <AccordionItem value={channel.id}>
+                                <AccordionItem key={channel.id} value={channel.id}>
                                     <AccordionTrigger className="font-bold" style={{ color: channel.themeColor ?? '#fff' }}>{channel.name}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">

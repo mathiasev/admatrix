@@ -23,7 +23,7 @@ export function CreateCampaign({ clientId = "" }: { clientId?: string }) {
   const clients = api.client.getClients.useQuery();
   const channels = api.channel.getChannels.useQuery();
 
-  const handleSubmit = (e: SubmitEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     createCampaign.mutate({
       name: name,

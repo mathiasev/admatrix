@@ -33,6 +33,9 @@ import {
     TableRow,
 } from "~/components/ui/table"
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group"
+import { Trash } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { api } from "~/trpc/react"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -48,6 +51,20 @@ export function DataTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
 
+
+    const deleteCampaign = api.campaign.delete.useMutation();
+
+    const router = useRouter();
+
+    const handleTrashClick = (campaignId: string) => {
+        deleteCampaign.mutate({
+            id: campaignId
+        }, {
+            onSuccess() {
+                router.refresh()
+            },
+        });
+    }
 
     const table = useReactTable({
         data,
@@ -66,6 +83,7 @@ export function DataTable<TData, TValue>({
             columnVisibility,
             rowSelection
         },
+
     })
 
     return (
@@ -164,10 +182,25 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
+                <div className="flex items-center gap-2">
+                    <p className="flex-1 text-sm text-muted-foreground">
+                        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                        {table.getFilteredRowModel().rows.length} row(s) selected.
+
+                    </p>
+                    <p>
+                        {table.getFilteredSelectedRowModel().rows.length > 0 && <Button
+                            onClick={() => {
+                                table.getFilteredSelectedRowModel().rows.map(item => {
+                                    handleTrashClick(item.original.id)
+                                })
+                            }}
+                            size={"icon"} variant={"destructive"} className="p-2">
+                            <Trash className="w-3 h-3" />
+                        </Button>}
+                    </p>
                 </div>
+
                 <div className="flex items-center justify-end space-x-2 py-4">
                     <Button
                         variant="outline"
@@ -187,6 +220,6 @@ export function DataTable<TData, TValue>({
                     </Button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

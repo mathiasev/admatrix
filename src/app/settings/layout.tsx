@@ -2,13 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
-import { api } from "~/trpc/react";
 
-
-export default function SettingsPage({ children, channels }: { children: React.ReactNode, channels: React.ReactNode }) {
+export default function SettingsLayout({ children, channels }: { children: React.ReactNode, channels: React.ReactNode }) {
 
     let router = useRouter();
 

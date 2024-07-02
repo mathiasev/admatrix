@@ -1,6 +1,6 @@
 "use client"
 import clsx from "clsx";
-import { ChevronLeft, Expand, Upload } from "lucide-react";
+import { ChevronLeft, Expand, Trash, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,11 +18,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { api } from "~/trpc/react"
 
-export const metadata = {
-    title: "Ad Matrix | Campaign",
-    description: "The ad preview tool",
-    icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
+
 
 export default function CampaignPage({ params }: { params: { campaignId: string } }) {
     let [editMode, updateEditMode] = useState(false);
@@ -41,6 +37,21 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
     if (campaign == undefined) {
         return '<p>Error fetching campaign.</p>';
     }
+
+
+    const deleteCampaign = api.campaign.delete.useMutation();
+
+    const handleTrashClick = (campaignId: string) => {
+
+        deleteCampaign.mutate({
+            id: campaignId
+        }, {
+            onSuccess() {
+                router.push('/campaigns')
+            },
+        });
+    }
+
 
     return (
         <div className="mx-auto grid flex-1 auto-rows-max gap-4">
@@ -65,6 +76,9 @@ export default function CampaignPage({ params }: { params: { campaignId: string 
                         <>
                             <Button onClick={() => { router.push(`/campaign/${campaign?.id}`); router.refresh() }} variant="outline" size="sm">
                                 Discard
+                            </Button>
+                            <Button variant={"destructive"} onClick={() => handleTrashClick(campaign.id)} size="sm">
+                                <Trash className="h-4 w-4" />
                             </Button>
                             <Button size="sm">Save Campaign</Button>
                         </>

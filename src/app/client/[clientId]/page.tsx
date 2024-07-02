@@ -51,10 +51,10 @@ export default function ClientPage({ params }: { params: { clientId: string } })
                     )}
                     {editMode && (
                         <>
-                            <Button onClick={() => { router.push(`/campaign/${client?.id}`); router.refresh() }} variant="outline" size="sm">
+                            <Button onClick={() => { router.push(`/client/${client?.id}`); router.refresh() }} variant="outline" size="sm">
                                 Discard
                             </Button>
-                            <Button size="sm">Save Campaign</Button>
+                            <Button size="sm">Save Client</Button>
                         </>
                     )}
                 </div>

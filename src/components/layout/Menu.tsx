@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Home, PanelsTopLeft, Tag } from "lucide-react";
+import { DownloadCloud, Home, PanelsTopLeft, Tag } from "lucide-react";
 import Nav from "~/lib/nav";
 
 export default function Menu() {
@@ -41,6 +41,19 @@ export default function Menu() {
                     </Link>
                 </TooltipTrigger>
                 <TooltipContent side="right">Clients</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Link
+                        href="/import"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8"
+                    >
+
+                        <DownloadCloud className="h-5 w-5" />
+                        <span className="sr-only">Import</span>
+                    </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Import</TooltipContent>
             </Tooltip>
         </nav>
     )
