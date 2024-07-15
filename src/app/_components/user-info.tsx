@@ -15,7 +15,7 @@ export default async function UserInfo() {
             <pre className=" whitespace-pre bg-gray-500 p-4 rounded-lg">
                 {JSON.stringify(useUser()?.user?.verifiedExternalAccounts)}
             </pre>
-
+            {/* TODO: Get api key from clerk */}
         </div>
     );
 }   
