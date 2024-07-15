@@ -5,6 +5,9 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import handleFile from "../api/file/handleFile";
+import { getAuth } from "@clerk/nextjs/server";
+import UserInfo from "../_components/user-info";
+
 
 type Ad = {
     name: string;
@@ -20,9 +23,10 @@ type Ad = {
 
 export default function ImportPage() {
 
-    const [stage, setStage] = useState(0);F
+    const [stage, setStage] = useState(0);
     const [platform, setPlatform] = useState("");
     const [ads, setAds] = useState<Ad[]>([]);
+    const [method, setMethod] = useState<"upload" | "import">("import");
 
     const handleFileUpload = async (files: FileList | null) => {
         console.log(files);
@@ -34,14 +38,59 @@ export default function ImportPage() {
             });
 
             let importedCampaigns = ads.map(ad => ad.campaign);
-            
-
         }
     }
 
     return (
         <form className="flex flex-col gap-4">
-            {stage >= 0 && <Card className="w-full">
+            <Card className="w-full">
+                <CardHeader>
+                    <CardTitle>Method</CardTitle>
+                    <CardDescription>
+                        Select which method to import your campaigns from.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Select
+                        name="method"
+                        value={method}
+                        onValueChange={(e: "upload" | "import") => setMethod(e)}
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="import">
+                                Import
+                            </SelectItem>
+                            <SelectItem value="upload">
+                                Upload
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </CardContent>
+            </Card>
+
+            {method == "import" && stage >= 0 &&
+                <Card >
+                    <CardHeader>
+                        <CardTitle>Import</CardTitle>
+                        <CardDescription>
+                            Select which channel to import your campaigns from.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <UserInfo />
+                    </CardContent>
+                    <CardFooter className="border-t px-6 py-4">
+                        <Button onClick={(e) => {
+                            e.preventDefault();
+                            setStage(1);
+                        }}>Next</Button>
+                    </CardFooter>
+                </Card>}
+
+            {method == "upload" && stage >= 0 && <Card className="w-full">
                 <CardHeader>
                     <CardTitle>Platform</CardTitle>
                     <CardDescription>
@@ -76,8 +125,10 @@ export default function ImportPage() {
                         setStage(1);
                     }}>Next</Button>
                 </CardFooter>
-            </Card>}
-            {stage >= 1 &&
+            </Card>
+            }
+            {method == "upload" &&
+                stage >= 1 &&
                 <Card className="w-full">
                     <CardHeader>
                         <CardTitle>Campaigns</CardTitle>
@@ -103,7 +154,8 @@ export default function ImportPage() {
                             }}
                         >Import</Button>
                     </CardFooter>
-                </Card>}
-        </form>
+                </Card>
+            }
+        </form >
     );
 }

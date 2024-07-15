@@ -19,24 +19,8 @@ import {
     Truck,
     Users2,
 } from "lucide-react"
-
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb"
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "~/components/ui/card"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -47,22 +31,13 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { Input } from "~/components/ui/input"
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-} from "~/components/ui/pagination"
-import { Separator } from "~/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "~/components/ui/tooltip"
-import { getServerAuthSession } from "~/server/auth"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { ModeToggle } from "./mode-toggle"
-import Breadcrumbs from "./Breadcrumbs"
 import Menu from "./Menu"
 
 
@@ -70,7 +45,6 @@ export async function Wrapper({ children }: {
     children: React.ReactNode
 }) {
 
-    const session = await getServerAuthSession();
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -168,36 +142,14 @@ export async function Wrapper({ children }: {
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="overflow-hidden rounded-full"
-                            >
-                                {session?.user && (
-                                    <Image
-                                        src={session.user.image}
-                                        width={36}
-                                        height={36}
-                                        alt="Avatar"
-                                        className="overflow-hidden rounded-full"
-                                    />)}
-                            </Button>
+                            <SignedIn>
+                                <UserButton />
+                            </SignedIn>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            {session?.user && (
-                                <DropdownMenuLabel>
-                                    {
-                                        session?.user.name
-                                    }</DropdownMenuLabel>
-                            )}
-                            {!session?.user && (
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/api/auth/signin">
-                                        <Button variant={"link"}>Signin</Button>
-                                    </Link>
-                                </DropdownMenuItem>
-                            )}
+                            <SignedOut>
+                                <SignInButton />
+                            </SignedOut>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>Settings</DropdownMenuItem>
                             <DropdownMenuItem>Support</DropdownMenuItem>
