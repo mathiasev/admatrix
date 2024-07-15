@@ -6,11 +6,23 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import handleFile from "../api/file/handleFile";
 
+type Ad = {
+    name: string;
+    description: string;
+    format: string;
+    adData: {
+        name: string;
+        value: string;
+    }[];
+    adSet: string;
+    campaign: string;
+}
+
 export default function ImportPage() {
 
-    const [stage, setStage] = useState(0);
+    const [stage, setStage] = useState(0);F
     const [platform, setPlatform] = useState("");
-    const [ads, setAds] = useState<string[][]>([]);
+    const [ads, setAds] = useState<Ad[]>([]);
 
     const handleFileUpload = async (files: FileList | null) => {
         console.log(files);
@@ -20,6 +32,10 @@ export default function ImportPage() {
             handleFile(files[i] as File, platform).then((data) => {
                 setAds([...ads, ...data]);
             });
+
+            let importedCampaigns = ads.map(ad => ad.campaign);
+            
+
         }
     }
 
@@ -83,7 +99,6 @@ export default function ImportPage() {
                         <Button
                             onClick={(e) => {
                                 e.preventDefault();
-
                                 setStage(2);
                             }}
                         >Import</Button>

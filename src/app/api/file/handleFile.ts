@@ -5,7 +5,12 @@ type Ad = {
     name: string;
     description: string;
     format: string;
-    adData: string[];
+    adData: {
+        name: string;
+        value: string;
+    }[];
+    adSet: string;
+    campaign: string;
 }
 
 export default function handleFile(file: File, platform: string): Promise<Ad[]> {
@@ -37,12 +42,19 @@ export default function handleFile(file: File, platform: string): Promise<Ad[]> 
                         }
                     })
 
-                    let googleAdFormat = rows.slice(google.headerRowNumber).map(row => {
+                    let googleAdFormat = rows.slice(google.headerRowNumber).map((row) => {
                         return {
-                            name: row[44],
-                            description: row[79],
-                            format: row[1],
-                            adData: row.slice(3)
+                            name: row[google.headerRow.indexOf("Ad ID")],
+                            description: "",
+                            format: row[google.headerRow.indexOf("Ad type")],
+                            adSet: row[google.headerRow.indexOf("Ad group ID")],
+                            campaign: row[google.headerRow.indexOf("Campaign Id")],
+                            adData: row.map((value, index) => {
+                                return {
+                                    name: google.headerRow[index],
+                                    value: value
+                                }
+                            })
                         }
                     }) as Ad[];
                     resolve(googleAdFormat);
